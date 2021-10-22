@@ -1,0 +1,304 @@
+<html>
+<head>
+
+</head>
+
+<style>
+.dark {
+ background: black;
+}
+
+.nodark {
+ background: white;
+}
+</style>
+
+<script>
+vtable = [8,8];
+orig_position="";
+newposition="";
+
+
+vempty = "img/empty.png";
+vyellow="img/yellow.png";
+vorange="img/orange.png";
+
+ for( let i = 0 ; i < 8; i++)
+ {
+   vtable[i, new Array(8) ];
+ }
+
+function run(){
+
+ vtable = [8];
+
+ for( let i = 0 ; i < 8; i++)
+ {
+   vtable[i, new Array(8) ];
+ }
+
+}
+
+
+function load(){
+
+   tmp="<table style='width: 850px; height:850px;' border='1'>";
+   lastclass="";
+   
+   totalPieces = 12;
+   totalSpaces =
+   
+   pieceYellow = 0;
+   pieceNonYellow = 0;
+   
+   
+   for(let i=0; i < 8; i++)
+   {
+      tmp += "<tr>";
+	  
+	  figure = "<img id='piece' src='' />";
+	  
+	  if( lastclass == "dark" )
+		{
+		  lastclass = "nodark";
+		}else
+        {
+		  lastclass = "dark";
+		}
+	  
+	  for(let k=0; k < 8; k++)
+	  {
+	    img1=""; 
+	    figure = "";
+		
+	    if( lastclass == "dark" )
+		{
+		  lastclass = "nodark";
+		}else
+        {
+		  lastclass = "dark";
+		  img1 = vempty;
+		  
+		  if( k == 0 || k == 1 || k == 2 )
+		   {
+			  img1= vyellow;
+		   }
+		   else 
+		       if( k == 5 || k == 6 || k == 7 )
+		       {
+				 img1=vorange;
+		       }
+		}
+		
+		vid = "\"position-" + i + "-" + k + "\"";
+		
+		figure = "<center><img onclick='movepiece2(" + vid + ");' id=" + vid + " style='color: white;' src='" + img1 + "' /></center>";
+		
+		vtable[ i , k ] = lastclass == "dark"?"dark":"nodark";
+
+		tmp += "<td class='" + lastclass + "'> "  + figure + " </td>";
+	  }
+	  
+	  tmp += "</tr>";
+	  
+   }
+   tmp+="</table>";
+   
+   document.getElementById("ground").innerHTML = tmp;   
+
+}
+
+
+
+function getPosition(lin,col){
+  vpos = "position-" + lin + "-" + col ;
+  return vpos;
+}
+
+function getLine(strpos){
+  vline = parseInt( strpos.split('-')[1] );
+  return vline;
+
+}
+
+function getCol(strpos){
+  vcol = parseInt( strpos.split('-')[2] );
+  return vcol;
+}
+
+function PositionIsEmpty(strposition){
+  resp = false;
+  if( document.getElementById(strposition).src.indexOf("empty") != -1 )
+    resp = true;
+  return resp;
+}
+
+function PositionIsYellow(strposition){
+  resp = false;
+  if( document.getElementById(strposition).src.indexOf("yellow") != -1 )
+    resp = true;
+  return resp;
+}
+
+function PositionIsOrange(strposition){
+  resp = false;
+  if( document.getElementById(strposition).src.indexOf("orange") != -1 )
+    resp = true;
+  return resp;
+}
+
+function movePosition(newPos,oldPos,strpiece){
+  document.getElementById(oldPos).src = vempty;
+  document.getElementById(newPos).src = strpiece;
+  orig_position="";
+}
+
+function movepiece2(vnextpos){
+
+    maxline = 7;
+	maxcol = 7;
+	minline = 0;
+	mincol = 0;
+	
+	orig_line = -1;
+	orig_col = -1;
+	
+	new_line = -1;
+	new_col = -1;
+
+   if( orig_position == "" ){
+      orig_position = vnextpos; //This was the first click so, we don't have yet the destination
+	  vnextpos = "";
+	  return;
+    }
+	
+	if( orig_position != ""  && vnextpos != "" ){
+	    if( !PositionIsEmpty( vnextpos ) ){
+		   alert( " Only move to a empty position !");
+		   orig_position="";
+		   return;
+		} 
+	}
+	
+    orig_line = getLine( orig_position );
+ 	orig_col = getCol(orig_position );
+	
+	if( vnextpos != "" ){
+	  new_line = getLine( vnextpos);
+ 	  new_col = getCol( vnextpos );
+	}
+	
+	if( new_line == orig_line ){
+	   console.log("You cannot move in the same line"); 
+	   orig_position="";
+	   return;
+	}
+	
+	if( new_col == orig_col ){
+	   console.log("You cannot move in the same column"); 
+	   orig_position="";
+	   return;
+	}
+	
+	
+	
+	//The maximun position allowed to jum is 3 --  this i snot working ... check tomorrow
+	if( (new_line - orig_line ) > 3 || (new_line - orig_line ) < -3 ){
+	    console.log("Only move three positions!"); 
+	    orig_position="";
+		return;
+	}
+	
+	
+	
+	
+	if(PositionIsOrange(orig_position)){
+	 /*
+		if( new_line > maxline )
+	    {
+	      console.log("line up boundery : " + new_line );
+		  orig_position="";
+	      return;
+	    }
+	    
+	    if( new_line < minline )
+	    {
+	      console.log("line down boundery : " + new_line );
+		  orig_position="";
+	      return;
+	    }
+	    
+	    if( new_col > maxcol )
+	    {
+	      console.log("column up boundery : " + new_col );
+		  orig_position="";
+	      return;
+	    }
+	    
+	    if( new_col < mincol )
+	    {
+	      console.log("column down boundery : " + new_col );
+		  orig_position="";
+	      return;
+	    }
+		*/
+	    vpiece=vorange;
+	}
+	else
+	{
+	  /*
+	    if( new_line > 7 )
+	    {
+	      console.log("line up boundery : " + new_line );
+		  orig_position="";
+	      return;
+	    }
+	    
+	    if( new_line < 0 )
+	    {
+	      console.log("line down boundery : " + new_line );
+		  orig_position="";
+	      return;
+	    }
+	    
+	    if( new_col > 7 )
+	    {
+	      console.log("column up boundery : " + new_col );
+		  orig_position="";
+	      return;
+	    }
+	    
+	    if( new_line < 0 )
+	    {
+	      console.log("column down boundery : " + new_col );
+		  orig_position="";
+	      return;
+	    }
+		*/
+		vpiece=vyellow;
+	}
+	movePosition(vnextpos,orig_position,vpiece );
+	  
+   //where I am
+   console.log("Where I am :" + orig_position );
+   console.log("Where I want to go :" + vnextpos );
+   
+
+}
+
+
+
+
+</script>
+
+<body onload="load();">
+
+<div id="ground">
+
+</div>
+
+<button onclick="loadpieces();">Load</button>
+
+</body>
+</html>
+
