@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<header><title></title>
+
+<script>
+
+function join(vid){
+  
+  console.log( "id = " + vid );
+  var vplayerId = '00000000-0000-0000-0000-000000000000';
+  vplayers = document.getElementById(vid).cells[1].innerText;
+  vgame = document.getElementById(vid).cells[0].innerText;
+  if( vplayers > 1 )
+  {
+	vplayerId = document.getElementById(vid).cells[2].innerText;
+    vplayerId = window.prompt("Could you please confirm your PlayerId? " , vplayerId);
+	if( vplayerId == "" )
+	{
+	  alert("PlayerId not provided !");
+	  return;
+	}else if ( vplayerId == null ){
+	  alert("Action cancelled!");
+	  return;
+	}
+  
+    vjgame = '';
+    vjgame += '{"game":"' + document.getElementById(vid).cells[0].innerText + '",';
+    vjgame += '"players":' + document.getElementById(vid).cells[1].innerText + ',';
+	vjgame += '"playerId":"' + vplayerId + '",';
+    vjgame += '"name":"' + document.getElementById(vid).cells[3].innerText + '",';
+    vjgame += '"identityAs":"' + document.getElementById(vid).cells[4].innerText + '",';
+    vjgame += '"org":"' + document.getElementById(vid).cells[5].innerText + '",';
+    vjgame += '"dst":"' + document.getElementById(vid).cells[6].innerText + '",';
+    vjgame += '"status":"' + document.getElementById(vid).cells[7].innerText + '",';
+    vjgame += '"lastUpdate":"' + document.getElementById(vid).cells[8].innerText + '"}';
+    
+    console.log( vjgame );
+	
+	//Call API to check if this user is already connected.
+	
+	const apiUrl = 'https://localhost:5001/Games';
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+		
+		   var o = JSON.parse(this.responseText);
+		   if( o.Status == "Not Found" ){
+		       alert("PlayerID or GameID invalid !");
+			   return;
+		   }
+	       alert("This game already started. You will be redirect to the game page.");
+		   var newGame = window.open("file:///C:/Users/marco/source/repos/checkers/pages/" + vgame + "-" + vplayerId + ".html", "_self");
+        }
+     };
+     xhttp.open("PUT", apiUrl, true);
+     xhttp.setRequestHeader("Content-type", "application/json");
+     xhttp.send( vjgame );
+	return;
+  }
+  
+  vcolor = document.getElementById(vid).cells[4].innerText;
+  vcolor = (vcolor.toLowerCase()=="orange")?"yellow":"orange";
+  vtime = document.getElementById(vid).cells[8].innerText;
+  //vplayerid = document.getElementById(vid).cells[2].innerText;
+  vfrm = "";
+  vfrm +="<table border='1'>";
+  vfrm +="<tr><th colspan='2'>Joining the Game:" + vgame + " </th></tr>";
+  vfrm +="<tr><td>Game       </td><td><input type='text' name='game'       id='game'         value='" +  vgame + "'  disabled /></td></tr>";
+  vfrm +="<tr><td>Players    </td><td><input type='text' name='players'    id='players'      value=" + 2 + "  disabled /></td></tr>";
+  vfrm +="<tr><td>PlayerId   </td><td><input type='text' name='playerId'   id='playerId'   value='00000000-0000-0000-0000-000000000000' disabled  /></td></tr>";
+  vfrm +="<tr><td>Name       </td><td><input type='text' name='name'       id='name'         value=''   /></td></tr>";
+  vfrm +="<tr><td style='background:" + vcolor + ";'>IdentityAs </td><td><input type='text' name='identityAs' id='identityAs'   value='" + vcolor + "' disabled  /></td></tr>";
+  vfrm +="<tr><td>Org        </td><td><input type='text' name='org'        id='org'          value='0:0'  disabled /></td></tr>";
+  vfrm +="<tr><td>Dst        </td><td><input type='text' name='dst'        id='dst'          value='0:0'  disabled /></td></tr>";
+  vfrm +="<tr><td>Status     </td><td><input type='text' name='status'     id='status'       value='Created' disabled  /></td></tr>";
+  vfrm +="<tr><td>LastUpdate </td><td><input type='text' name='lastUpdate' id='lastUpdate'   value='" + vtime + "' disabled /></td></tr>";
+  vfrm +="</table>";
+  vfrm +=" <input type='submit' value='Submit' onclick='JoinGame();'>";
+  document.getElementById("frmNewGame").innerHTML = vfrm;
+}
+
+function loadGames(){
+ const apiUrl = 'https://localhost:5001/Games';
+ var xhttp = new XMLHttpRequest();
+ xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+	      var gmlist  = "<table border='1'>";
+              gmlist += "<tr><th>Game</th><th>Players</th><th>PlayerId</th><th>Player Name</th><th>Identity As</th><th>Origin</th><th>Destination</th><th>Status</th><th>Last Update</th></tr>";
+		  var o = JSON.parse(this.responseText);
+		  for( let i = 0 ;i <o.length; i++)
+		  {
+		    console.log( o[i].game, o[i].players, o[i].playerId, o[i].name, o[i].identityAs, o[i].org, o[i].dst, o[i].status, o[i].lastUpdate );
+			gmlist += "<tr id=" + i + " ><td onclick='join(" + i + ");'>" + o[i].game + "</td><td>" + o[i].players + "</td><td>" + o[i].playerId + "</td><td>" + o[i].name + "</td><td style='background:" + o[i].identityAs + ";' >" + o[i].identityAs + "</td><td>" + o[i].org + "</td><td>" + o[i].dst + "</td><td>" + o[i].status + "</td><td>" + o[i].lastUpdate + "</td></tr>";
+		  }
+		  gmlist += "</table>";
+		  document.getElementById("gamelist").innerHTML = gmlist;
+    }
+ };
+ xhttp.open("GET", apiUrl, true);
+ //xhttp.setRequestHeader("Content-type", "application/json");
+ //xhttp.send("Your JSON Data Here");
+ xhttp.send();
+}
+
+function NewGame(){
+ vfrm = "";
+ vfrm +="<table border='1'>";
+ vfrm +="<tr><td>Game       </td><td><input type='text' name='game'       id='game'         value='00000000-0000-0000-0000-000000000000'   /></td></tr>";
+ vfrm +="<tr><td>Players    </td><td><input type='text' name='players'    id='players'      value=1   /></td></tr>";
+ vfrm +="<tr><td>PlayerId   </td><td><input type='text' name='playerId'   id='playerId'     value='00000000-0000-0000-0000-000000000000'   /></td></tr>";
+ vfrm +="<tr><td>Name       </td><td><input type='text' name='name'       id='name'         value='Paulo'   /></td></tr>";
+ //vfrm +="<tr><td>IdentityAs </td><td><input type='text' name='identityAs' id='identityAs'   value='Orange'   /></td></tr>";
+ vfrm +="<tr><td>IdentityAs </td><td>" + "<select id='identityAs' ><option value='yellow'>Yellow</option><option value='orange'>Orange</option></select></td></tr>";
+ vfrm +="<tr><td>Org        </td><td><input type='text' name='org'        id='org'          value='0:0'   /></td></tr>";
+ vfrm +="<tr><td>Dst        </td><td><input type='text' name='dst'        id='dst'          value='0:0'   /></td></tr>";
+ vfrm +="<tr><td>Status     </td><td><input type='text' name='status'     id='status'       value='Created'   /></td></tr>";
+ vfrm +="<tr><td>LastUpdate </td><td><input type='text' name='lastUpdate' id='lastUpdate'   value='2021-10-24T15:30:14.961148+13:00'   /></td></tr>";
+ vfrm +="</table>";
+ vfrm +=" <input type='submit' value='Submit' onclick='CreateGame();'>";
+ document.getElementById("frmNewGame").innerHTML = vfrm;
+}
+
+function CreateGame(){
+ vjgame = '';
+ vjgame += '{"game":"' + document.getElementById("game").value + '",';
+ vjgame += '"players":' + document.getElementById("players").value + ',';
+ vjgame += '"playerId":"' + document.getElementById("playerId").value + '",';
+ vjgame += '"name":"' + document.getElementById("name").value + '",';
+ vjgame += '"identityAs":"' + document.getElementById("identityAs").value + '",';
+ vjgame += '"org":"' + document.getElementById("org").value + '",';
+ vjgame += '"dst":"' + document.getElementById("dst").value + '",';
+ vjgame += '"status":"' + document.getElementById("status").value + '",';
+ vjgame += '"lastUpdate":"' + document.getElementById("lastUpdate").value + '"}';
+ console.log( vjgame );
+ //var objGame  = JSON.parse(vjgame);
+ //var data = JSON.stringify( objGame );
+ const apiUrl = 'https://localhost:5001/Games';
+ var xhttp = new XMLHttpRequest();
+ xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+	    alert( this.responseText );
+		loadGames();
+		document.getElementById("frmNewGame").innerHTML = "";
+    }
+ };
+ xhttp.open("POST", apiUrl, true);
+ xhttp.setRequestHeader("Content-type", "application/json");
+ xhttp.send( vjgame );
+ //loadGames();
+}
+
+function JoinGame(){
+ vjgame = '';
+ if( document.getElementById("name").value == "")
+ {
+   alert("Please, fill your name.");
+   return;
+ }
+ vjgame += '{"game":"' + document.getElementById("game").value + '",';
+ vjgame += '"players":' + document.getElementById("players").value + ',';
+ vjgame += '"playerId":"' + document.getElementById("playerId").value + '",';
+ vjgame += '"name":"' + document.getElementById("name").value + '",';
+ vjgame += '"identityAs":"' + document.getElementById("identityAs").value + '",';
+ vjgame += '"org":"' + document.getElementById("org").value + '",';
+ vjgame += '"dst":"' + document.getElementById("dst").value + '",';
+ vjgame += '"status":"' + document.getElementById("status").value + '",';
+ vjgame += '"lastUpdate":"' + document.getElementById("lastUpdate").value + '"}';
+ 
+ console.log( vjgame );
+   
+ const apiUrl = 'https://localhost:5001/Games';
+ var xhttp = new XMLHttpRequest();
+ xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+	    var o = JSON.parse(this.responseText);
+		if( o.Status == "Not Found" ){
+		       alert("PlayerID or GameID invalid !");
+			   return;
+		} 
+	    alert( "You successfully joined to the game. You will be redirected to the Game Page");
+		//loadGames();
+		var gamefile = document.getElementById("game").value + "-" + o.playerId ;
+		console.log( "gamefile :" + gamefile );
+		var newGame = window.open("file:///C:/Users/marco/source/repos/checkers/pages/" + gamefile + ".html", "_self");
+    }
+ };
+ xhttp.open("PUT", apiUrl, true);
+ xhttp.setRequestHeader("Content-type", "application/json");
+ xhttp.send( vjgame );
+}
+</script>
+
+
+</header>
+
+<body onload="loadGames();">
+
+
+<h2>Games</h2>
+
+<button onclick="NewGame();">Create a new game</button><br><br>
+
+<div id="gamelist"></div>
+
+<br><br>
+<div id="frmNewGame"></div>
+
+
+</body>
+
+</html>
