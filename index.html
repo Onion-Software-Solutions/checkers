@@ -4,7 +4,7 @@
 
 <script>
 
-const apiUrl='https://localhost:5001/Games';
+const apiUrl='https://checkersapi2.azurewebsites.net/games';
 
 function join(vid){
   
@@ -51,7 +51,8 @@ function join(vid){
 			   return;
 		   }
 	       alert("This game already started. You will be redirect to the game page.");
-		   var newGame = window.open("file:///C:/Users/marco/source/repos/checkers/pages/" + vgame + "-" + vplayerId + ".html", "_self");
+		   //var newGame = window.open("file:///C:/Users/marco/source/repos/checkers/pages/" + vgame + "-" + vplayerId + ".html", "_self");
+		   var newGame = window.open("file:///C:/Users/marco/source/repos/checkersAPI/checkersAPI/Pages/" + vgame + "-" + vplayerId + ".html", "_self");
         }
      };
      xhttp.open("PUT", apiUrl, true);
@@ -183,7 +184,8 @@ function JoinGame(){
 		//loadGames();
 		var gamefile = document.getElementById("game").value + "-" + o.playerId ;
 		console.log( "gamefile :" + gamefile );
-		var newGame = window.open("file:///C:/Users/marco/source/repos/checkers/pages/" + gamefile + ".html", "_self");
+		//var newGame = window.open("file:///C:/Users/marco/source/repos/checkers/pages/" + gamefile + ".html", "_self");
+		var newGame = window.open("file:///C:/Users/marco/source/repos/checkersAPI/checkersAPI/Pages/" + gamefile + ".html", "_self");
     }
  };
  xhttp.open("PUT", apiUrl, true);
