@@ -4,14 +4,15 @@
 
 <script>
 
-const apiUrl='https://checkersapi2.azurewebsites.net/games';
+//const apiUrl='https://checkersapi2.azurewebsites.net/games';
+const apiUrl='https://localhost:5001/games';
 
 function join(vid){
-  
   console.log( "id = " + vid );
   var vplayerId = '00000000-0000-0000-0000-000000000000';
   vplayers = document.getElementById(vid).cells[1].innerText;
   vgame = document.getElementById(vid).cells[0].innerText;
+  vcolorid = document.getElementById(vid).cells[4].innerText;
   if( vplayers > 1 )
   {
 	vplayerId = document.getElementById(vid).cells[2].innerText;
@@ -35,32 +36,24 @@ function join(vid){
     vjgame += '"dst":"' + document.getElementById(vid).cells[6].innerText + '",';
     vjgame += '"status":"' + document.getElementById(vid).cells[7].innerText + '",';
     vjgame += '"lastUpdate":"' + document.getElementById(vid).cells[8].innerText + '"}';
-    
     console.log( vjgame );
-	
-	//Call API to check if this user is already connected.
-	
-	//const apiUrl = 'https://localhost:5001/Games';
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-		
-		   var o = JSON.parse(this.responseText);
-		   if( o.Status == "Not Found" ){
-		       alert("PlayerID or GameID invalid !");
-			   return;
-		   }
 	       alert("This game already started. You will be redirect to the game page.");
-		   //var newGame = window.open("file:///C:/Users/marco/source/repos/checkers/pages/" + vgame + "-" + vplayerId + ".html", "_self");
-		   var newGame = window.open("file:///C:/Users/marco/source/repos/checkersAPI/checkersAPI/Pages/" + vgame + "-" + vplayerId + ".html", "_self");
+		   var a = document.createElement('a');
+		   a.href = "checkers.html?game=" + vgame  + "&player=" + vplayerId + "&color=" + vcolorid ;
+           a.click();
+		   return;
+		   
         }
      };
      xhttp.open("PUT", apiUrl, true);
      xhttp.setRequestHeader("Content-type", "application/json");
+	 xhttp.setRequestHeader("Accept", "text/html");
      xhttp.send( vjgame );
-	return;
+	 return;
   }
-  
   vcolor = document.getElementById(vid).cells[4].innerText;
   vcolor = (vcolor.toLowerCase()=="orange")?"yellow":"orange";
   vtime = document.getElementById(vid).cells[8].innerText;
@@ -83,7 +76,7 @@ function join(vid){
 }
 
 function loadGames(){
- //const apiUrl = 'https://localhost:5001/Games';
+ 
  var xhttp = new XMLHttpRequest();
  xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -137,7 +130,7 @@ function CreateGame(){
  console.log( vjgame );
  //var objGame  = JSON.parse(vjgame);
  //var data = JSON.stringify( objGame );
- //const apiUrl = 'https://localhost:5001/Games';
+ 
  var xhttp = new XMLHttpRequest();
  xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -168,10 +161,7 @@ function JoinGame(){
  vjgame += '"dst":"' + document.getElementById("dst").value + '",';
  vjgame += '"status":"' + document.getElementById("status").value + '",';
  vjgame += '"lastUpdate":"' + document.getElementById("lastUpdate").value + '"}';
- 
  console.log( vjgame );
-   
- //const apiUrl = 'https://localhost:5001/Games';
  var xhttp = new XMLHttpRequest();
  xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -181,11 +171,34 @@ function JoinGame(){
 			   return;
 		} 
 	    alert( "You successfully joined to the game. You will be redirected to the Game Page");
-		//loadGames();
+		
+		/*
 		var gamefile = document.getElementById("game").value + "-" + o.playerId ;
 		console.log( "gamefile :" + gamefile );
-		//var newGame = window.open("file:///C:/Users/marco/source/repos/checkers/pages/" + gamefile + ".html", "_self");
-		var newGame = window.open("file:///C:/Users/marco/source/repos/checkersAPI/checkersAPI/Pages/" + gamefile + ".html", "_self");
+		var newGame = window.open("https://checkersapi2.azurewebsites.net/pages/" + gamefile + ".html", "_self");
+		*/
+		
+		
+		vgame = document.getElementById("game").value;
+		vplayerId = o.playerId ;
+		vcolorid = o.identityAs;
+		
+		var a = document.createElement('a');
+		a.href = "checkers.html?game=" + vgame  + "&player=" + vplayerId + "&color=" + vcolorid ;
+        a.click();
+		return;
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
     }
  };
  xhttp.open("PUT", apiUrl, true);
@@ -199,6 +212,7 @@ function JoinGame(){
 
 <body onload="loadGames();">
 
+<dir id="all">
 
 <h2>Games</h2>
 
@@ -209,6 +223,9 @@ function JoinGame(){
 <br><br>
 <div id="frmNewGame"></div>
 
+<div id="content"></div>
+
+</div>
 
 </body>
 
