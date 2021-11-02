@@ -4,8 +4,8 @@
 
 <script>
 
-//const apiUrl='https://checkersapi2.azurewebsites.net/games';
-const apiUrl='https://localhost:5001/games';
+const apiUrl='https://checkersapi2.azurewebsites.net/games';
+//const apiUrl='https://localhost:5001/games';
 
 function join(vid){
   console.log( "id = " + vid );
@@ -171,14 +171,11 @@ function JoinGame(){
 			   return;
 		} 
 	    alert( "You successfully joined to the game. You will be redirected to the Game Page");
-		
 		/*
 		var gamefile = document.getElementById("game").value + "-" + o.playerId ;
 		console.log( "gamefile :" + gamefile );
 		var newGame = window.open("https://checkersapi2.azurewebsites.net/pages/" + gamefile + ".html", "_self");
 		*/
-		
-		
 		vgame = document.getElementById("game").value;
 		vplayerId = o.playerId ;
 		vcolorid = o.identityAs;
@@ -187,18 +184,6 @@ function JoinGame(){
 		a.href = "checkers.html?game=" + vgame  + "&player=" + vplayerId + "&color=" + vcolorid ;
         a.click();
 		return;
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
     }
  };
  xhttp.open("PUT", apiUrl, true);

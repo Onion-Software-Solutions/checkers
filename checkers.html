@@ -16,10 +16,15 @@
 </style>
 
 <script>
+
+const apiUrl='https://checkersapi2.azurewebsites.net/games';
+//const apiUrl='https://localhost:5001/games';
+
+
 var orig_position="";
 var newposition="";
 
-var vempty = "img/empty.png";
+var vblack = "img/black.png";
 var vyellow="img/yellow.png";
 var vorange="img/orange.png";
 
@@ -32,13 +37,12 @@ function sleep(milliseconds) {
    return new Promise(resolve => setTimeout(resolve, milliseconds));  
 } 
 
-
 function load2(){
-  const apiUrl = 'https://localhost:5001/Games/' + gameID;
+  lapiUrl = apiUrl + '/' + gameID;
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-	      console.log("Updating ..");
+	      console.log("Updating: Received [" + this.responseText + "]");
 	      cleanAll();
 		  var o = JSON.parse(this.responseText);
 		  for( let i = 0 ;i <o.length; i++)
@@ -50,66 +54,62 @@ function load2(){
 			   case "Yellow" : vcolor = vyellow; break;
 			   case "Orange" : vcolor = vorange; break;
 			   case "orange" : vcolor = vorange; break;
-			   case null : vcolor = vempty; break;
-			   case "empty" : vcolor = vempty; break;
+			   case null : vcolor = vblack; break;
+			   case "black" : vcolor = vblack; break;
 			}
 			setPosition(strpos, vcolor );
 		  }
     }
  }
- xhttp.open("GET", apiUrl, true);
+ xhttp.open("GET", lapiUrl, true);
  xhttp.setRequestHeader("Content-type", "application/json");
  xhttp.send();
 }
 
-
 function cleanAll(){
  var o =
 [
- {"identityAs":"empty","lin":1,"col":0}, 
- {"identityAs":"empty","lin":3,"col":0},
- {"identityAs":"empty","lin":5,"col":0},
- {"identityAs":"empty","lin":7,"col":0},
- {"identityAs":"empty","lin":0,"col":1},
- {"identityAs":"empty","lin":2,"col":1},
- {"identityAs":"empty","lin":4,"col":1},
- {"identityAs":"empty","lin":6,"col":1},
- {"identityAs":"empty","lin":1,"col":2},
- {"identityAs":"empty","lin":3,"col":2},
- {"identityAs":"empty","lin":5,"col":2},
- {"identityAs":"empty","lin":7,"col":2},
- {"identityAs":"empty","lin":0,"col":5},
- {"identityAs":"empty","lin":2,"col":5},
- {"identityAs":"empty","lin":4,"col":5},
- {"identityAs":"empty","lin":6,"col":5},
- {"identityAs":"empty","lin":1,"col":6},
- {"identityAs":"empty","lin":3,"col":6},
- {"identityAs":"empty","lin":5,"col":6},
- {"identityAs":"empty","lin":7,"col":6},
- {"identityAs":"empty","lin":0,"col":7},
- {"identityAs":"empty","lin":2,"col":7},
- {"identityAs":"empty","lin":4,"col":7},
- {"identityAs":"empty","lin":6,"col":7},
- {"identityAs":"empty","lin":0,"col":3},
- {"identityAs":"empty","lin":2,"col":3},
- {"identityAs":"empty","lin":4,"col":3},
- {"identityAs":"empty","lin":6,"col":3},
- {"identityAs":"empty","lin":1,"col":4},
- {"identityAs":"empty","lin":3,"col":4},
- {"identityAs":"empty","lin":5,"col":4},
- {"identityAs":"empty","lin":7,"col":4}
+ {"identityAs":"black","lin":1,"col":0}, 
+ {"identityAs":"black","lin":3,"col":0},
+ {"identityAs":"black","lin":5,"col":0},
+ {"identityAs":"black","lin":7,"col":0},
+ {"identityAs":"black","lin":0,"col":1},
+ {"identityAs":"black","lin":2,"col":1},
+ {"identityAs":"black","lin":4,"col":1},
+ {"identityAs":"black","lin":6,"col":1},
+ {"identityAs":"black","lin":1,"col":2},
+ {"identityAs":"black","lin":3,"col":2},
+ {"identityAs":"black","lin":5,"col":2},
+ {"identityAs":"black","lin":7,"col":2},
+ {"identityAs":"black","lin":0,"col":5},
+ {"identityAs":"black","lin":2,"col":5},
+ {"identityAs":"black","lin":4,"col":5},
+ {"identityAs":"black","lin":6,"col":5},
+ {"identityAs":"black","lin":1,"col":6},
+ {"identityAs":"black","lin":3,"col":6},
+ {"identityAs":"black","lin":5,"col":6},
+ {"identityAs":"black","lin":7,"col":6},
+ {"identityAs":"black","lin":0,"col":7},
+ {"identityAs":"black","lin":2,"col":7},
+ {"identityAs":"black","lin":4,"col":7},
+ {"identityAs":"black","lin":6,"col":7},
+ {"identityAs":"black","lin":0,"col":3},
+ {"identityAs":"black","lin":2,"col":3},
+ {"identityAs":"black","lin":4,"col":3},
+ {"identityAs":"black","lin":6,"col":3},
+ {"identityAs":"black","lin":1,"col":4},
+ {"identityAs":"black","lin":3,"col":4},
+ {"identityAs":"black","lin":5,"col":4},
+ {"identityAs":"black","lin":7,"col":4}
 ];
 
  for( let i = 0 ;i <o.length; i++)
  {
     strpos = getPosition( o[i].lin, o[i].col );
- 
-    //o[i].identityAs = o[i].identityAs==null:"vempty"?o[i].identityAs;
- 
     switch(o[i].identityAs){
       case "yellow": vcolor = vyellow; break;
       case "orange": vcolor = vorange; break;
-      case "empty": vcolor = vempty ; break;
+      case "black": vcolor = vblack ; break;
     }
     setPosition(strpos, vcolor );
  }
@@ -142,14 +142,14 @@ function setupStart(){
  {"identityAs":"orange","lin":2,"col":7},
  {"identityAs":"orange","lin":4,"col":7},
  {"identityAs":"orange","lin":6,"col":7},
- {"identityAs":"empty","lin":0,"col":3},
- {"identityAs":"empty","lin":2,"col":3},
- {"identityAs":"empty","lin":4,"col":3},
- {"identityAs":"empty","lin":6,"col":3},
- {"identityAs":"empty","lin":1,"col":4},
- {"identityAs":"empty","lin":3,"col":4},
- {"identityAs":"empty","lin":5,"col":4},
- {"identityAs":"empty","lin":7,"col":4}
+ {"identityAs":"black","lin":0,"col":3},
+ {"identityAs":"black","lin":2,"col":3},
+ {"identityAs":"black","lin":4,"col":3},
+ {"identityAs":"black","lin":6,"col":3},
+ {"identityAs":"black","lin":1,"col":4},
+ {"identityAs":"black","lin":3,"col":4},
+ {"identityAs":"black","lin":5,"col":4},
+ {"identityAs":"black","lin":7,"col":4}
 ];
 
   for( let i = 0 ;i <o.length; i++)
@@ -158,7 +158,7 @@ function setupStart(){
 	switch(o[i].identityAs){
 	  case "yellow": vcolor = vyellow; break;
 	  case "orange": vcolor = vorange; break;
-	  case "empty": vcolor = vempty ; break;
+	  case "black": vcolor = vblack ; break;
 	}
 	setPosition(strpos, vcolor );
   }
@@ -166,20 +166,13 @@ function setupStart(){
 }
 
 function load(){
-   
-//MARCOS
-
-   
-    var parameters = location.search.substring(1).split("&");
-
-    var temp = parameters[0].split("=");
-    gameID = unescape(temp[1]);
-    temp = parameters[1].split("=");
-    playerID = unescape(temp[1]);
-    temp = parameters[2].split("=");
-	colorID = playerID = unescape(temp[1]);
-	
-   
+   var parameters = location.search.substring(1).split("&");
+   var temp = parameters[0].split("=");
+   gameID = unescape(temp[1]);
+   temp = parameters[1].split("=");
+   playerID = unescape(temp[1]);
+   temp = parameters[2].split("=");
+   colorID = playerID = unescape(temp[1]);
    
    lastclass="";
    totalPieces = 12;
@@ -210,7 +203,7 @@ function load(){
 		}else
         {
 		  lastclass = "dark";
-		  img1 = vempty;
+		  img1 = vblack;
 		  if( k == 0 || k == 1 || k == 2 )
 		  {
 			  img1= vyellow;
@@ -227,10 +220,7 @@ function load(){
    }
    tmp+="</table>";
    document.getElementById("ground").innerHTML = tmp;   
-   
    document.getElementById("whoIam").innerHTML = "Am the : " + colorID;   
-   
-   //load2();
    setInterval(load2, 3000);
 }
 
@@ -249,9 +239,9 @@ function getCol(strpos){
   return vcol;
 }
 
-function PositionIsEmpty(strposition){
+function PositionIsblack(strposition){
   resp = false;
-  if( document.getElementById(strposition).src.indexOf("empty") != -1 )
+  if( document.getElementById(strposition).src.indexOf("black") != -1 )
     resp = true;
   return resp;
 }
@@ -271,15 +261,14 @@ function PositionIsOrange(strposition){
 }
 
 function movePosition(newPos,oldPos,strpiece){
-  //document.getElementById(oldPos).src = vempty;
-  //document.getElementById(newPos).src = strpiece;
-  setPosition(oldPos,vempty);
+  setPosition(oldPos,vblack);
   setPosition(newPos,strpiece);
   document.getElementById("pposition").innerText = "From:"+ oldPos + " To: " + newPos;
 }
 
 function setPosition(sPosition,spiece){
-  document.getElementById(sPosition).src = spiece; 
+  if(document.getElementById(sPosition))
+     document.getElementById(sPosition).src = spiece; 
 }
 
 function getPiece(sPosition){
@@ -292,7 +281,6 @@ function getPiece(sPosition){
 function getColor(sPosition){
   ret = "";
   ret = document.getElementById(sPosition).src 
-  //ret = ret.split('/')[ ret.split('/').length -2 ] + "/" + ret.split('/')[ ret.split('/').length -1 ]
   ret = ret.split('/')[ret.split('/').length -1 ];
   ret = ret.replace(".png","");
   return ret;
@@ -318,8 +306,7 @@ function addScore(spiece){
 
 
 function isMyTimeTopPlay(){
-  const apiUrl = 'https://localhost:5001/Games/turn/' + colorID + '/' + gameID;
-  
+  lapiUrl = apiUrl + '/turn/' + colorID + '/' + gameID;
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -332,7 +319,7 @@ function isMyTimeTopPlay(){
 		  //return  JSON.parse(this.responseText) ;
     }
  }
- xhttp.open("GET", apiUrl, false); //Turn it to sync
+ xhttp.open("GET", lapiUrl, false); //Turn it to sync
  xhttp.setRequestHeader("Content-type", "application/json");
  xhttp.send();
  
@@ -341,7 +328,6 @@ function isMyTimeTopPlay(){
 }
 
 function movepiece(vnextpos){
-
     maxline = 7;
 	maxcol = 7;
 	minline = 0;
@@ -351,13 +337,11 @@ function movepiece(vnextpos){
 	new_line = -1;
 	new_col = -1;
 	middle_position="position-0-0";
-
    if( orig_position == "" ){
       orig_position = vnextpos; //This was the first click so, we don't have yet the destination
 	  vnextpos = "";
 	  return;
     }
-	
 	colorPlay = getColor(orig_position);
     if( colorPlay.toLowerCase()  != colorID.toLowerCase() )
 	{ 
@@ -367,10 +351,9 @@ function movepiece(vnextpos){
 	  return;
 	}
 	
-	
 	if( orig_position != ""  && vnextpos != "" ){
-	    if( !PositionIsEmpty( vnextpos ) ){
-		   alert( "Only move to a empty position !");
+	    if( !PositionIsblack( vnextpos ) ){
+		   alert( "Only move to a black position !");
 		   orig_position="";
 		   return;
 		} 
@@ -459,9 +442,9 @@ function movepiece(vnextpos){
 	  
 	  middle_position="position-" + middle_line + "-" + middle_col;
 	  
-	  if(PositionIsEmpty(middle_position))
+	  if(PositionIsblack(middle_position))
 	  {
-	    alert("You cannot jump over an empty position");
+	    alert("You cannot jump over an black position");
 		orig_position="";
 		middle_position="";
 		return;
@@ -476,11 +459,11 @@ function movepiece(vnextpos){
 	  }
 	  
 	  //Score one point
-	  setPosition(middle_position,vempty);
+	  setPosition(middle_position,vblack);
 	  addScore(vpiece);
 	  //MARCOS
 	  //Update the Server ............................................................MARCOS 
-	  SetPositionIntoServer("empty", middle_line, middle_col );
+	  SetPositionIntoServer("black", middle_line, middle_col );
 	  
 	}
 	
@@ -506,14 +489,7 @@ function movepiece(vnextpos){
 	middle_position="";
 }
 
-
-// 
 function updateMovement( oldlin ,oldcol ,newlin ,newcol){
-  
-  ///Games/move/{playerColor}/{gameid} /{oldlin} /{oldcol}/{newlin}/{newcol}
-  
-  //string playerColor, string gameid,int oldlin, int oldcol, int newlin, int newcol
-  
   var objInput = 
   {
     "game": gameID,
@@ -524,9 +500,7 @@ function updateMovement( oldlin ,oldcol ,newlin ,newcol){
 	"new_col": newcol
   };
   var sObjInput = JSON.stringify(objInput);
-  
-  const apiUrl = 'https://localhost:5001/Games/move'; 
-  
+  lapiUrl = apiUrl + '/move'; 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -534,7 +508,7 @@ function updateMovement( oldlin ,oldcol ,newlin ,newcol){
 		  return this.responseText;
     }
  }
- xhttp.open("PUT", apiUrl, true); 
+ xhttp.open("PUT", lapiUrl, true); 
  xhttp.setRequestHeader("Content-type", "application/json");
  xhttp.send(sObjInput);
 }
@@ -551,7 +525,7 @@ function SetPositionIntoServer( color ,lin ,col ){
 	"col": col
   };
   var sObjInput = JSON.stringify(objInput);
-  const apiUrl = 'https://localhost:5001/Games/setpos'; 
+  lapiUrl = apiUrl + '/setpos'; 
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -559,7 +533,7 @@ function SetPositionIntoServer( color ,lin ,col ){
 		  return this.responseText;
     }
  }
- xhttp.open("PUT", apiUrl, true); 
+ xhttp.open("PUT", lapiUrl, true); 
  xhttp.setRequestHeader("Content-type", "application/json");
  xhttp.send(sObjInput);
 }
@@ -571,9 +545,6 @@ function SetPositionIntoServer( color ,lin ,col ){
 <div id="ground">
 
 </div>
-
-<p id="myparameter"></p>
-
 
 <p id="whoIam"></p>
 <p id="pposition">Position:</p>
