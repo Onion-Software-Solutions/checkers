@@ -2,186 +2,20 @@
 <html>
 <header><title></title>
 
-<style>
-.actioncol{
- width: 37px;
-}
-.gamecol{
- width: 170px;
-}
-.playerscol{
- width: 41px;
- text-align: center;
-}
-.playernamecol{
- width: 77px;
-}
-.identityascol{
- width: 40px;
-}
-.statuscol{
- width: 36px;
-}
-.lastupdatecol{
- width: 84px;
-}
-/*********************************/
-
-body {font-family: Arial, Helvetica, sans-serif;}
-
-/* The Modal (background) */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-/* Modal Content */
-.modal-content {
-  position: relative;
-  background-color: #fefefe;
-  margin: auto;
-  padding: 0;
-  border: 1px solid #888;
-  width: 80%;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-  -webkit-animation-name: animatetop;
-  -webkit-animation-duration: 0.4s;
-  animation-name: animatetop;
-  animation-duration: 0.4s
-}
-
-/* Add Animation */
-@-webkit-keyframes animatetop {
-  from {top:-300px; opacity:0} 
-  to {top:0; opacity:1}
-}
-
-@keyframes animatetop {
-  from {top:-300px; opacity:0}
-  to {top:0; opacity:1}
-}
-
-/* The Close Button */
-.close {
-  color: white;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.modal-header {
-  padding: 2px 16px;
-  background-color: #5cb85c;
-  color: white;
-}
-
-.modal-body {padding: 2px 16px;}
-
-.modal-footer {
-  padding: 2px 16px;
-  background-color: #5cb85c;
-  color: white;
-}
-
-.hoverTable{
-		width:100%; 
-		border-collapse:collapse; 
-	}
-.hoverTable td{ 
-		padding:7px; border:#4e95f4 1px solid;
-	}
-/* Define the default color for all the table rows */
-.hoverTable tr{
-		background: #b8d1f3;
-	}
-/* Define the hover highlight color for the table row */
-.hoverTable tr:hover {
-          background-color: #ffff99;
-    }
-
-/*********************************/
-
-
-
-</style>
-
 <script>
-//Columns:
-const nColAction     = 0; //Action
-const nColGame       = 1; //Game
-const nColPlayers    = 2; //Players
-const nColPlayerId   = 3; //PlayerID
-const nColPlayerName = 4; //Player Name
-const nColColor      = 5; //Color
-const nColStatus     = 6; //Status
-const nColLastUpdate = 7; //Last Update
 
 //const apiUrl='https://checkersapi2.azurewebsites.net/games';
-const apiUrl='https://localhost:5001/Games';
-
-function editgame(gameid){
-  alert("Change the game : " + gameid + " line : " + line );
-}
-
-function deletegame(gameid,line){
-   //var nplayers = parseInt( document.getElementById(line).cells[nColPlayers].innerText );
-   //if( nplayers > 1 ){
-   //  alert("You cannot delete a game that already started. Number of players : " + nplayers );
-//	 return;
-  // }
-   var r = confirm("Do you really want to delete the game :" + gameid + " ?");
-   if (r == true) 
-   {
-      console.log("Deleting the game : " + gameid );
-	  lapiUrl = apiUrl + '?gameid=' + gameid;
-      var xhttp = new XMLHttpRequest();
-      xhttp.onreadystatechange = function() {
-         if (this.readyState == 4 && this.status == 200) {
-		    loadGames();
-         } else if (this.readyState == 4){
-	        console.log("ERROR: Deleting StatusCode : " + this.status );
-	     }
-      };
-      xhttp.open("DELETE", lapiUrl, false);
-      xhttp.setRequestHeader("Content-type", "application/json");
-      xhttp.send();
-   
-   } else {
-      alert("Deletion cancelled !");
-   }
-}
-
-function changeSrcBin(){
-  document.getElementById("bin0").src = "img/bin2.png";
-}
-
+const apiUrl='https://localhost:5001/games';
 
 function join(vid){
   console.log( "id = " + vid );
   var vplayerId = '00000000-0000-0000-0000-000000000000';
-  vplayers = document.getElementById(vid).cells[nColPlayers].innerText;
-  vgame = document.getElementById(vid).cells[nColGame].innerText;
-  vcolorid = document.getElementById(vid).cells[nColColor].innerText;
-  vstatus = document.getElementById(vid).cells[nColStatus].innerText;
-  
-  if( vstatus == 'Running' ){
-	vplayerId = document.getElementById(vid).cells[nColPlayerId].innerText;
+  vplayers = document.getElementById(vid).cells[1].innerText;
+  vgame = document.getElementById(vid).cells[0].innerText;
+  vcolorid = document.getElementById(vid).cells[4].innerText;
+  if( vplayers > 1 )
+  {
+	vplayerId = document.getElementById(vid).cells[2].innerText;
     vplayerId = window.prompt("Could you please confirm your PlayerId? " , vplayerId);
 	if( vplayerId == "" )
 	{
@@ -192,17 +26,16 @@ function join(vid){
 	  return;
 	}
   
-    vjgame = '{"_id":"00000000-0000-0000-0000-000000000000",';
-    vjgame += '"game":"' + document.getElementById(vid).cells[nColGame].innerText + '",';
-    vjgame += '"players":' + document.getElementById(vid).cells[nColPlayers].innerText + ',';
+    vjgame = '';
+    vjgame += '{"game":"' + document.getElementById(vid).cells[0].innerText + '",';
+    vjgame += '"players":' + document.getElementById(vid).cells[1].innerText + ',';
 	vjgame += '"playerId":"' + vplayerId + '",';
-    vjgame += '"name":"' + document.getElementById(vid).cells[nColPlayerName].innerText + '",';
-    vjgame += '"identityAs":"' + document.getElementById(vid).cells[nColColor].innerText + '",';
-	vjgame += '"org":"0:0",';
-    vjgame += '"dst":"0:0",';
-    vjgame += '"status":"' + document.getElementById(vid).cells[nColStatus].innerText + '",';
-    //vjgame += '"lastUpdate":"' + document.getElementById(vid).cells[nColLastUpdate].innerText + '"}';
-	vjgame += '"lastUpdate":"' + (new Date()).toISOString() + '"}';
+    vjgame += '"name":"' + document.getElementById(vid).cells[3].innerText + '",';
+    vjgame += '"identityAs":"' + document.getElementById(vid).cells[4].innerText + '",';
+    vjgame += '"org":"' + document.getElementById(vid).cells[5].innerText + '",';
+    vjgame += '"dst":"' + document.getElementById(vid).cells[6].innerText + '",';
+    vjgame += '"status":"' + document.getElementById(vid).cells[7].innerText + '",';
+    vjgame += '"lastUpdate":"' + document.getElementById(vid).cells[8].innerText + '"}';
     console.log( vjgame );
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
@@ -221,9 +54,10 @@ function join(vid){
      xhttp.send( vjgame );
 	 return;
   }
-  vcolor = document.getElementById(vid).cells[nColColor].innerText;
+  vcolor = document.getElementById(vid).cells[4].innerText;
   vcolor = (vcolor.toLowerCase()=="orange")?"yellow":"orange";
-  vtime = document.getElementById(vid).cells[nColLastUpdate].innerText;
+  vtime = document.getElementById(vid).cells[8].innerText;
+  //vplayerid = document.getElementById(vid).cells[2].innerText;
   vfrm = "";
   vfrm +="<table border='1'>";
   vfrm +="<tr><th colspan='2'>Joining the Game:" + vgame + " </th></tr>";
@@ -242,31 +76,25 @@ function join(vid){
 }
 
 function loadGames(){
+ 
  var xhttp = new XMLHttpRequest();
  xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-		  var gmlist = "";
+	      var gmlist  = "<table border='1'>";
+              gmlist += "<tr><th>Game</th><th>Players</th><th>PlayerId</th><th>Player Name</th><th>Identity As</th><th>Origin</th><th>Destination</th><th>Status</th><th>Last Update</th></tr>";
 		  var o = JSON.parse(this.responseText);
 		  for( let i = 0 ;i <o.length; i++)
 		  {
-		    console.log("LoadGames: " + o[i].game, o[i].players, o[i].playerId, o[i].name, o[i].identityAs, o[i].org, o[i].dst, o[i].status, o[i].lastUpdate );
-			gmlist += "<tr id=" + i + ">";
-			gmlist += " <td class='actioncol'>" + "<a href title='delete this game'><img alt='delete' id='bin" + i + "' style='width: 28px; height: 30px;' src='img/bin2.png' onclick='deletegame(\"" + o[i].game + "\",\"" + i + "\");' /></a>";
-			gmlist += " <a href title='edit this game'><img alt='delete' id='edit" + i + "' style='width: 28px; height: 30px;' src='img/edit3.png' onclick='editgame(\"" + o[i].game + "\");' /></a></td>";
-			gmlist += " <td class='gamecol' onclick='join(" + i + ");'>" + o[i].game + "</td>";
-			gmlist += " <td class='playerscol'>" + o[i].players + "</td>";
-			gmlist += " <td style='display: none;' >" + o[i].playerId + "</td>";
-			gmlist += " <td class='playernamecol'>" + o[i].name + "</td>";
-			gmlist += " <td class='identityascol' style='background:" + o[i].identityAs + ";' >" + o[i].identityAs + "</td>";
-			gmlist += " <td class='statuscol'>" + o[i].status + "</td>";
-			gmlist += " <td class='lastupdatecol'>" + o[i].lastUpdate.substr(0,16 ).replace('T',' ') + "</td>";
-			gmlist += "</tr>";
+		    console.log( o[i].game, o[i].players, o[i].playerId, o[i].name, o[i].identityAs, o[i].org, o[i].dst, o[i].status, o[i].lastUpdate );
+			gmlist += "<tr id=" + i + " ><td onclick='join(" + i + ");'>" + o[i].game + "</td><td>" + o[i].players + "</td><td>" + o[i].playerId + "</td><td>" + o[i].name + "</td><td style='background:" + o[i].identityAs + ";' >" + o[i].identityAs + "</td><td>" + o[i].org + "</td><td>" + o[i].dst + "</td><td>" + o[i].status + "</td><td>" + o[i].lastUpdate + "</td></tr>";
 		  }
-		  document.getElementById("gamelist").innerHTML = "";
+		  gmlist += "</table>";
 		  document.getElementById("gamelist").innerHTML = gmlist;
     }
  };
  xhttp.open("GET", apiUrl, true);
+ //xhttp.setRequestHeader("Content-type", "application/json");
+ //xhttp.send("Your JSON Data Here");
  xhttp.send();
 }
 
@@ -277,6 +105,7 @@ function NewGame(){
  vfrm +="<tr><td>Players    </td><td><input type='text' name='players'    id='players'      value=1   /></td></tr>";
  vfrm +="<tr><td>PlayerId   </td><td><input type='text' name='playerId'   id='playerId'     value='00000000-0000-0000-0000-000000000000'   /></td></tr>";
  vfrm +="<tr><td>Name       </td><td><input type='text' name='name'       id='name'         value='Paulo'   /></td></tr>";
+ //vfrm +="<tr><td>IdentityAs </td><td><input type='text' name='identityAs' id='identityAs'   value='Orange'   /></td></tr>";
  vfrm +="<tr><td>IdentityAs </td><td>" + "<select id='identityAs' ><option value='yellow'>Yellow</option><option value='orange'>Orange</option></select></td></tr>";
  vfrm +="<tr><td>Org        </td><td><input type='text' name='org'        id='org'          value='0:0'   /></td></tr>";
  vfrm +="<tr><td>Dst        </td><td><input type='text' name='dst'        id='dst'          value='0:0'   /></td></tr>";
@@ -299,6 +128,9 @@ function CreateGame(){
  vjgame += '"status":"' + document.getElementById("status").value + '",';
  vjgame += '"lastUpdate":"' + document.getElementById("lastUpdate").value + '"}';
  console.log( vjgame );
+ //var objGame  = JSON.parse(vjgame);
+ //var data = JSON.stringify( objGame );
+ 
  var xhttp = new XMLHttpRequest();
  xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -310,6 +142,7 @@ function CreateGame(){
  xhttp.open("POST", apiUrl, true);
  xhttp.setRequestHeader("Content-type", "application/json");
  xhttp.send( vjgame );
+ //loadGames();
 }
 
 function JoinGame(){
@@ -327,7 +160,7 @@ function JoinGame(){
  vjgame += '"org":"' + document.getElementById("org").value + '",';
  vjgame += '"dst":"' + document.getElementById("dst").value + '",';
  vjgame += '"status":"' + document.getElementById("status").value + '",';
- vjgame += '"lastUpdate":"' + (new Date()).toISOString() + '"}';
+ vjgame += '"lastUpdate":"' + document.getElementById("lastUpdate").value + '"}';
  console.log( vjgame );
  var xhttp = new XMLHttpRequest();
  xhttp.onreadystatechange = function() {
@@ -338,9 +171,15 @@ function JoinGame(){
 			   return;
 		} 
 	    alert( "You successfully joined to the game. You will be redirected to the Game Page");
+		/*
+		var gamefile = document.getElementById("game").value + "-" + o.playerId ;
+		console.log( "gamefile :" + gamefile );
+		var newGame = window.open("https://checkersapi2.azurewebsites.net/pages/" + gamefile + ".html", "_self");
+		*/
 		vgame = document.getElementById("game").value;
 		vplayerId = o.playerId ;
 		vcolorid = o.identityAs;
+		
 		var a = document.createElement('a');
 		a.href = "checkers.html?game=" + vgame  + "&player=" + vplayerId + "&color=" + vcolorid ;
         a.click();
@@ -364,27 +203,8 @@ function JoinGame(){
 
 <button onclick="NewGame();">Create a new game</button><br><br>
 
-<div style="width:1040px; font-family: monospace; font-size: larger;border: 1px solid black; border-collapse: collapse;">
-  <div >
-     <table id="gamesheader" border="1" width="1040px">
-        <tr>
-		 <th style="width: 68px;">Action</th>
-		 <th style="width: 294px;">Game</th>
-		 <th style="width: 71px;">Players</th>
-		 <th style="width: 161px;">Player Name</th>
-		 <th style="width: 70px;">Color</th>
-		 <th style="width: 80px;">Status</th>
-		 <th style="width: 200px;">Last Update</th>
-		</tr>
-     </table>
-  </div>
-  
-  <div id="dvdata" style="height: 200px; width: 1040px; overflow-y: auto; overflow-x: hidden;" >
-	<table boder="1" id="gamelist" class="hoverTable" width="1040">
-       
-     </table>
-  </div>
-</div>
+<div id="gamelist"></div>
+
 <br><br>
 <div id="frmNewGame"></div>
 

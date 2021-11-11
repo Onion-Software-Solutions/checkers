@@ -17,8 +17,8 @@
 
 <script>
 
-const apiUrl='https://checkersapi2.azurewebsites.net/games';
-//const apiUrl='https://localhost:5001/games';
+//const apiUrl='https://checkersapi2.azurewebsites.net/games';
+const apiUrl='https://localhost:5001/games';
 
 
 var orig_position="";
@@ -212,7 +212,7 @@ function load(){
 		  {
 			 img1=vorange;
 		  }
-		  figure = "<center><img onclick='movepiece(" + vid + ");' id=" + vid + " style='color: white;' src='" + img1 + "' /> " + vid + " </center>";
+		  figure = "<center><img onclick='movepiece(" + vid + ");' id=" + vid + " style='color: white;' loading='lazy' alt='...' src='" + img1 + "' /> " + vid + " </center>";
 		}
 		tmp += "<td class='" + lastclass + "'> "  + figure + " </td>";
 	  }
@@ -304,9 +304,8 @@ function addScore(spiece){
   document.getElementById(scordid).innerText = txtscore + score;
 }
 
-
 function isMyTimeTopPlay(){
-  lapiUrl = apiUrl + '/turn/' + colorID + '/' + gameID;
+  lapiUrl = apiUrl + '/checkturn/' + colorID + '/' + gameID;
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -322,9 +321,7 @@ function isMyTimeTopPlay(){
  xhttp.open("GET", lapiUrl, false); //Turn it to sync
  xhttp.setRequestHeader("Content-type", "application/json");
  xhttp.send();
- 
  return retPlay;
- 
 }
 
 function movepiece(vnextpos){
@@ -350,7 +347,6 @@ function movepiece(vnextpos){
 	  vnextpos = "";
 	  return;
 	}
-	
 	if( orig_position != ""  && vnextpos != "" ){
 	    if( !PositionIsblack( vnextpos ) ){
 		   alert( "Only move to a black position !");
@@ -358,10 +354,8 @@ function movepiece(vnextpos){
 		   return;
 		} 
 	}
-	
     orig_line = getLine( orig_position );
  	orig_col = getCol(orig_position );
-	
 	if( vnextpos != "" ){
 	  new_line = getLine( vnextpos);
  	  new_col = getCol( vnextpos );
@@ -378,7 +372,6 @@ function movepiece(vnextpos){
 	   orig_position="";
 	   return;
 	}
-	
 	//The maximun position allowed to jum is 3 --  this i snot working ... check tomorrow
 	if( (new_line - orig_line ) > 3 || (new_line - orig_line ) < -3 ){
 	    alert("Only move three positions!"); 
@@ -457,18 +450,14 @@ function movepiece(vnextpos){
 		middle_position="";
 		return;
 	  }
-	  
 	  //Score one point
 	  setPosition(middle_position,vblack);
 	  addScore(vpiece);
 	  //MARCOS
 	  //Update the Server ............................................................MARCOS 
 	  SetPositionIntoServer("black", middle_line, middle_col );
-	  
 	}
-	
 	retPlay = isMyTimeTopPlay();
-	
 	if(!retPlay)
     {
 	  alert("wait other player play ..");
@@ -476,12 +465,9 @@ function movepiece(vnextpos){
 	  middle_position="";
 	  return;
     }
-	
 	movePosition(vnextpos,orig_position,vpiece );
-	
 	//Update the server //
 	updateMovement(orig_line,orig_col, new_line, new_col);
-	
 	console.log("Origin:" + orig_position );
 	console.log("Middle:" + middle_position );
 	console.log("Next:" + vnextpos );
