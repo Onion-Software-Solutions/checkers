@@ -180,7 +180,7 @@ function join(vid){
   vcolorid = document.getElementById(vid).cells[nColColor].innerText;
   vstatus = document.getElementById(vid).cells[nColStatus].innerText;
   
-  if( vstatus == 'Running' ){
+  if( vstatus == 'Running' || vstatus == 'Waiting'  ){
 	vplayerId = document.getElementById(vid).cells[nColPlayerId].innerText;
     vplayerId = window.prompt("Could you please confirm your PlayerId? " , vplayerId);
 	if( vplayerId == "" )

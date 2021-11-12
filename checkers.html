@@ -42,7 +42,7 @@ function load2(){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-	      console.log("Updating: Received [" + this.responseText + "]");
+	      console.log("load2: Updating board Received [" + this.responseText + "]");
 	      cleanAll();
 		  var o = JSON.parse(this.responseText);
 		  for( let i = 0 ;i <o.length; i++)
